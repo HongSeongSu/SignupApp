@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Step3</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.5/validator.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <nav>
+      <ul class="pagination">
+        <li class="page-item disabled"><a class="page-link">1</a></li>
+        <li class="page-item disabled"><a class="page-link">2</a></li>
+        <li class="page-item active"><a class="page-link">3</a></li>
+        <li class="page-item disabled"><a class="page-link">4</a></li>
+      </ul>
+    </nav>
+  </div>
+  {% block content %}
+  <div class="container">
+    <form data-toggle="validator" action="" method="post">{% csrf_token %}
+      {% for field in profile_form %}
+       <div class="form-group{% if field.errors %} has-error{% endif %}">
+				{{ field.label_tag }}
+				{{ field }}
+                <div class="help-block with-errors"></div>
+				{% if field.errors %}
+					{% for error in field.errors %}
+					<span class="help-block">{{ error }}</span>
+					{% endfor %}
+				{% endif %}
+       </div>
+      {% endfor %}
+
+      <button type="submit" id="profile-button" class="btn btn-primary">Done</button>
+    </form>
+  </div>
+  {% endblock %}
+</body>
+<script>
+    document.getElementById("fullname").addEventListener("keyup", profileFunction);
+    document.getElementById("phone").addEventListener("keyup", profileFunction);
+    document.getElementById("address").addEventListener("keyup", profileFunction);
+    document.getElementById("homepage").addEventListener("keyup", profileFunction);
+    document.getElementById("profile-button").disabled = true;
+
+    function profileFunction() {
+        var fullname = document.getElementById("fullname");
+        var phone = document.getElementById("phone");
+        var address = document.getElementById("address");
+        var homepage = document.getElementById("homepage");
+        var profile_done = document.getElementById("profile-button");
+        var url_regex_format = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
+
+        profile_done.disabled = true;
+        if (fullname.value=="")
+            return
+        if (phone.value=="")
+            return
+        if (!homepage.value.match(url_regex_format))
+            return
+        profile_done.disabled = false;
+    }
+</script>
+</html>
